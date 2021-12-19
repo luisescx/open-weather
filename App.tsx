@@ -1,3 +1,5 @@
+import "react-native-gesture-handler";
+
 import React from "react";
 import { StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components/native";
@@ -10,6 +12,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import Dashboard from "./src/screens/Dashboard";
 import theme from "./src/global/styles/theme";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -31,7 +34,9 @@ export default function App() {
             />
 
             <ThemeProvider theme={theme}>
-                <Dashboard />
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                    <Dashboard />
+                </GestureHandlerRootView>
             </ThemeProvider>
         </>
     );
