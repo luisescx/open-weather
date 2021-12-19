@@ -1,19 +1,40 @@
-import React from "react";
+import React, { useState, useRef } from "react";
+import { Alert, TextInput } from "react-native";
 
 import { Container, InputField, InputButton, Icon } from "./styles";
 
-const Input = () => {
+interface InputProps {
+    citySearch: (cityName: string) => void;
+}
+
+const Input = ({ citySearch }: InputProps) => {
+    const [inputText, setInputText] = useState("");
+    const inputRef = useRef<TextInput>(null);
+
+    const handleCitySearch = () => {
+        if (inputText !== "") {
+            citySearch(inputText);
+            setInputText("");
+            inputRef.current?.blur();
+            return;
+        }
+
+        return Alert.alert("Digite o nome de uma cidade antes de confirmar!");
+    };
+
     return (
         <Container>
             <InputField
-                placeholder="Digite aqui uma cidade"
-                value={""}
+                ref={inputRef}
+                placeholder="Procure uma nova cidade aqui"
+                value={inputText}
+                onChangeText={(e) => setInputText(e)}
                 returnKeyType="send"
                 autoCapitalize="none"
-                autoCorrect={false}
+                onSubmitEditing={handleCitySearch}
             />
 
-            <InputButton testID="input-button">
+            <InputButton onPress={handleCitySearch} disabled={inputText === ""}>
                 <Icon name="search" size={20} />
             </InputButton>
         </Container>
