@@ -1,5 +1,6 @@
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 export const Container = styled.View`
     flex: 1;
@@ -9,17 +10,23 @@ export const Container = styled.View`
 export const Header = styled.View`
     width: 100%;
     background: ${({ theme }) => theme.colors.primary};
-    height: ${RFValue(113)}px;
-
+    height: ${RFPercentage(20)}px;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 19px;
+    padding-bottom: 40px;
 `;
 
 export const Title = styled.Text`
     font-size: ${RFValue(18)}px;
     color: ${({ theme }) => theme.colors.shape};
     font-family: ${({ theme }) => theme.fonts.regular};
+`;
+
+export const InputContent = styled.View`
+    width: 100%;
+    margin-top: ${getStatusBarHeight() + RFValue(55)}px;
+    position: absolute;
+    padding: 0 24px;
 `;
 
 export const Content = styled.View`
