@@ -10,9 +10,9 @@ import {
     Poppins_500Medium,
     Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
-import Dashboard from "./src/screens/Dashboard";
 import theme from "./src/global/styles/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Routes } from "./src/routes";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -35,7 +35,7 @@ export default function App() {
 
             <ThemeProvider theme={theme}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
-                    <Dashboard />
+                    <Routes />
                 </GestureHandlerRootView>
             </ThemeProvider>
         </>
