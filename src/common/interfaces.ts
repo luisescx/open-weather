@@ -37,9 +37,9 @@ export interface CityDTO {
 
     openWeatherId: string;
 
-    name: string;
+    title: string;
 
-    country: string;
+    subTitle: string;
 
     coord: Coordinates;
 
@@ -47,14 +47,18 @@ export interface CityDTO {
         main: string;
         description: string;
         temp: number;
-        temp_min: number;
-        temp_max: number;
+        tempMin: number;
+        tempMax: number;
     };
 
-    // isFavorite: boolean;
-    // daily: {
+    dayTime: string;
 
-    // }[]
+    // isFavorite: boolean;
+}
+
+export interface CityDetailProps {
+    coordinate: Coordinates;
+    cityName: string;
 }
 
 interface Coordinates {
@@ -64,19 +68,21 @@ interface Coordinates {
 
 export interface RouteParams {
     cities: CityDTO[];
+    cityDetail: CityDetailProps;
 }
 
 export interface CardProps {
     isWeather?: boolean;
+    isFavorite?: boolean;
     city: CityDTO;
     addCity?: (newCity: CityDTO) => void;
-    loadCities?: () => void;
 }
 
 export type RootParamList = {
     Splash: undefined;
     Dashboard: undefined;
     CitiesList: { cities: CityDTO[] };
+    CityDetail: { cityDetail: CityDetailProps };
 };
 
 export type ScreenNavigationProp = CompositeNavigationProp<
