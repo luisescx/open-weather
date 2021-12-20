@@ -1,6 +1,6 @@
+import React, { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { Alert } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { env } from "../../../env";
 import { NavigateEnum } from "../../common/enum";
 import {
@@ -12,7 +12,8 @@ import CityWeatherCard from "../../components/CityWeatherCard";
 import Input from "../../components/Input";
 import NoCities from "../../components/NoCities";
 import { googlePlaceApi } from "../../services/api";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/core";
 import {
     Container,
     Header,
@@ -21,10 +22,13 @@ import {
     Cities,
     InputContent,
 } from "./styles";
+import { useCities } from "../../hooks/useCities";
 
 const { googleApiKey } = env;
 
 const Dashboard = () => {
+    const { cities, loadCities } = useCities();
+
     const navigation = useNavigation<ScreenNavigationProp>();
 
     const handleCitySearch = async (cityName: string) => {
@@ -36,17 +40,30 @@ const Dashboard = () => {
         const { predictions, status } = data as GooglePlaceCity;
 
         if (status === "OK") {
-            // tratamento para verificar se essa cidade já esta adicionada e se ja estiver remover da lista
-            const cities = predictions.map((city) => {
+            const index = predictions.findIndex(({ place_id }) => {
+                return cities.some(
+                    ({ googlePlaceId }) => googlePlaceId === place_id
+                );
+            });
+
+            if (predictions.length === 1 && index !== -1) {
+                return Alert.alert("Cidade já adicionada");
+            }
+
+            if (index !== -1) {
+                predictions.splice(index, 1);
+            }
+
+            const citiesToAdd = predictions.map((city) => {
                 return {
                     googlePlaceId: city.place_id,
-                    name: city.structured_formatting.main_text,
-                    country: city.structured_formatting.secondary_text,
+                    title: city.structured_formatting.main_text,
+                    subTitle: city.structured_formatting.secondary_text,
                 } as CityDTO;
             });
 
             navigation.navigate(NavigateEnum.citiesList, {
-                cities,
+                cities: citiesToAdd,
             });
 
             return;
@@ -54,6 +71,12 @@ const Dashboard = () => {
 
         Alert.alert("Não foram encontradas cidades");
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            loadCities();
+        }, [])
+    );
 
     return (
         <Container>
@@ -67,14 +90,18 @@ const Dashboard = () => {
 
             <Content>
                 <Cities>
-                    {/* <FlatList
-                        data={["1", "2"]}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={() => "1"}
-                        renderItem={({ item }) => <CityCard />}
-                    /> */}
-                    {/* <CityCard /> */}
-                    <NoCities />
+                    {cities && cities.length > 0 ? (
+                        <FlatList
+                            data={cities}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item) => item.openWeatherId}
+                            renderItem={({ item }) => (
+                                <CityWeatherCard city={item} />
+                            )}
+                        />
+                    ) : (
+                        <NoCities />
+                    )}
                 </Cities>
             </Content>
         </Container>

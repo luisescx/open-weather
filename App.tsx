@@ -1,5 +1,4 @@
 import "react-native-gesture-handler";
-
 import React from "react";
 import { StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components/native";
@@ -13,6 +12,7 @@ import {
 import theme from "./src/global/styles/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Routes } from "./src/routes";
+import { CitiesProvider } from "./src/contexts/CitiesProvider";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -33,11 +33,13 @@ export default function App() {
                 backgroundColor={theme.colors.primary}
             />
 
-            <ThemeProvider theme={theme}>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                    <Routes />
-                </GestureHandlerRootView>
-            </ThemeProvider>
+            <CitiesProvider>
+                <ThemeProvider theme={theme}>
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                        <Routes />
+                    </GestureHandlerRootView>
+                </ThemeProvider>
+            </CitiesProvider>
         </>
     );
 }

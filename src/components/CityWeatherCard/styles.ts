@@ -12,7 +12,7 @@ export const SwipeableContainer = styled(Swipeable).attrs({
 
 export const DeleteContainer = styled.View`
     padding: 17px 24px;
-    margin-top: ${RFValue(16)}px;
+    margin-bottom: ${RFValue(16)}px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     justify-content: center;

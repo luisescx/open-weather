@@ -1,13 +1,17 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { CardProps, CityDTO } from "../../common/interfaces";
 import CityCard from "../CityCard";
 
 import { SwipeableContainer, DeleteContainer, DeleteIcon } from "./styles";
+import { useCities } from "../../hooks/useCities";
 
-const CityWeatherCard = ({ city, isWeather = true }: CardProps) => {
+const CityWeatherCard = ({ city }: CardProps) => {
     const swipeableRef = useRef<Swipeable>(null);
+
+    const { removeCity } = useCities();
 
     function handleDeleteAlert() {
         Alert.alert(
@@ -19,16 +23,15 @@ const CityWeatherCard = ({ city, isWeather = true }: CardProps) => {
                     onPress: () => swipeableRef.current?.close(),
                     style: "cancel",
                 },
-                { text: "Sim", onPress: () => console.log("removido") },
+                {
+                    text: "Sim",
+                    onPress: () => {
+                        removeCity(city);
+                    },
+                },
             ]
         );
     }
-
-    // function CardContent() {
-    //     return (
-    //        <CityCard />
-    //     );
-    // }
 
     function SwipeableDelete() {
         return (
@@ -46,7 +49,7 @@ const CityWeatherCard = ({ city, isWeather = true }: CardProps) => {
             renderRightActions={() => <SwipeableDelete />}
             onSwipeableRightOpen={handleDeleteAlert}
         >
-            {/* <CardContent /> */}
+            <CityCard city={city} />
         </SwipeableContainer>
     );
 };

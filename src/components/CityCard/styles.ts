@@ -3,29 +3,15 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
-export const styles = StyleSheet.create({
-    shadow: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 12,
-        },
-        shadowOpacity: 0.58,
-        shadowRadius: 16.0,
-        elevation: 4,
-        margin: 4,
-    },
-});
-
 export const Container = styled(TouchableOpacity).attrs({
-    activeOpacity: 0.9,
+    activeOpacity: 0.6,
 })`
     background-color: ${({ theme }) => theme.colors.shape};
 
     border-radius: 5px;
 
     padding: 17px 24px;
-    margin-top: ${RFValue(16)}px;
+    margin-bottom: ${RFValue(16)}px;
 `;
 
 export const Header = styled.View`
@@ -36,9 +22,14 @@ export const Header = styled.View`
 
 export const HeaderContent = styled.View``;
 
-export const CityName = styled.Text`
+export const Title = styled.Text`
     font-family: ${({ theme }) => theme.fonts.medium};
     font-size: ${RFValue(20)}px;
+`;
+
+export const SubTitle = styled.Text`
+    font-family: ${({ theme }) => theme.fonts.regular};
+    font-size: ${RFValue(14)}px;
 `;
 
 export const Text = styled.Text`

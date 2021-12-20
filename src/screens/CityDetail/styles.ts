@@ -1,8 +1,5 @@
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { RFValue } from "react-native-responsive-fontsize";
-import { FlatList } from "react-native";
-import { getBottomSpace } from "react-native-iphone-x-helper";
-import { CityDTO } from "../../common/interfaces";
 
 export const Container = styled.View`
     flex: 1;
@@ -34,9 +31,16 @@ export const Title = styled.Text`
     margin-left: -24px;
 `;
 
+export const Description = styled.Text`
+    font-size: ${RFValue(14)}px;
+    color: ${({ theme }) => theme.colors.title};
+    font-family: ${({ theme }) => theme.fonts.medium};
+    text-align: center;
+    margin: 8px 0;
+`;
+
 export const Content = styled.View`
     flex: 1%;
 
-    padding: 0 12px;
-    margin-top: 12px;
+    padding: 0 24px;
 `;
