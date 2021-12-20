@@ -79,7 +79,7 @@ export interface CardProps {
 }
 
 export type RootParamList = {
-    Splash: undefined;
+    SplashScreen: undefined;
     Dashboard: undefined;
     CitiesList: { cities: CityDTO[] };
     CityDetail: { cityDetail: CityDetailProps };

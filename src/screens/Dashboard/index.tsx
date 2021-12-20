@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Alert, FlatList } from "react-native";
+import { Alert, BackHandler, FlatList, StatusBar } from "react-native";
 import { env } from "../../../env";
 import { NavigateEnum } from "../../common/enum";
 import {
@@ -22,12 +22,13 @@ import {
 } from "./styles";
 import { useCities } from "../../hooks/useCities";
 import LoadAnimation from "../../components/LoadAnimation";
+import { useTheme } from "styled-components/native";
 
 const { googleApiKey } = env;
 
 const Dashboard = () => {
     const { cities, loadCities, isLoading } = useCities();
-
+    const theme = useTheme();
     const navigation = useNavigation<ScreenNavigationProp>();
 
     const handleCitySearch = async (cityName: string) => {
@@ -73,10 +74,20 @@ const Dashboard = () => {
 
     useEffect(() => {
         loadCities();
+
+        BackHandler.addEventListener("hardwareBackPress", () => {
+            return true;
+        });
     }, []);
 
     return (
         <Container>
+            <StatusBar
+                barStyle="light-content"
+                translucent={true}
+                backgroundColor={theme.colors.primary}
+            />
+
             <Header>
                 <Title>Cidades</Title>
             </Header>

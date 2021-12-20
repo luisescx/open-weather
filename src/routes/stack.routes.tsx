@@ -4,6 +4,7 @@ import { RootParamList } from "../common/interfaces";
 import Dashboard from "../screens/Dashboard";
 import CitiesList from "../screens/CitiesList";
 import CityDetail from "../screens/CityDetail";
+import SplashScreen from "../screens/SplashScreen";
 
 const { Navigator, Screen } = createNativeStackNavigator<RootParamList>();
 
@@ -13,9 +14,16 @@ export function AppStackRoutes() {
             screenOptions={{
                 headerShown: false,
             }}
-            initialRouteName="Dashboard"
+            initialRouteName="SplashScreen"
         >
-            <Screen name="Dashboard" component={Dashboard} />
+            <Screen name="SplashScreen" component={SplashScreen} />
+            <Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={{
+                    gestureEnabled: false,
+                }}
+            />
             <Screen name="CitiesList" component={CitiesList} />
             <Screen name="CityDetail" component={CityDetail} />
         </Navigator>
