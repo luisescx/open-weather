@@ -1,10 +1,8 @@
 import React from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList, View } from "react-native";
 import {
     CityDTO,
-    OpenWeatherCity,
     RouteParams,
     ScreenNavigationProp,
 } from "../../common/interfaces";

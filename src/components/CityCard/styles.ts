@@ -1,7 +1,11 @@
-import styled from "styled-components/native";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import styled, { css } from "styled-components/native";
+import { AntDesign } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+
+interface Props {
+    isWeather: boolean;
+}
 
 export const Container = styled(TouchableOpacity).attrs({
     activeOpacity: 0.6,
@@ -27,9 +31,15 @@ export const Title = styled.Text`
     font-size: ${RFValue(20)}px;
 `;
 
-export const SubTitle = styled.Text`
+export const SubTitle = styled.Text<Props>`
     font-family: ${({ theme }) => theme.fonts.regular};
     font-size: ${RFValue(14)}px;
+
+    ${({ isWeather }) =>
+        isWeather &&
+        css`
+            width: 100px;
+        `}
 `;
 
 export const Text = styled.Text`

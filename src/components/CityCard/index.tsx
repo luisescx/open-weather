@@ -2,6 +2,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { NavigateEnum } from "../../common/enum";
 import { CardProps, ScreenNavigationProp } from "../../common/interfaces";
+import { useCities } from "../../hooks/useCities";
 
 import {
     Container,
@@ -26,10 +27,12 @@ const CityCard = ({
     isWeather = true,
     isFavorite = true,
 }: CardProps) => {
-    const [favoriteCity, setFavoriteCity] = useState(false);
+    const [favoriteCity, setFavoriteCity] = useState(city.isFavorite);
     const navigation = useNavigation<ScreenNavigationProp>();
     const route = useRoute();
     const routeName = route.name;
+
+    const { handleFavorite } = useCities();
 
     const handlePress = () => {
         const cityDetail = {
@@ -45,12 +48,18 @@ const CityCard = ({
         addCity(city);
     };
 
+    const handleFavoriteState = () => {
+        handleFavorite(city);
+
+        setFavoriteCity(!favoriteCity);
+    };
+
     return (
-        <Container onPress={routeName === "CityDetail" ? null : handlePress}>
+        <Container onPress={routeName === "Dashboard" ? handlePress : null}>
             <Header>
                 <HeaderContent>
                     <Title>{city.title}</Title>
-                    <SubTitle>{city.subTitle}</SubTitle>
+                    <SubTitle isWeather={isWeather}>{city.subTitle}</SubTitle>
                 </HeaderContent>
 
                 {isWeather && (
@@ -67,7 +76,7 @@ const CityCard = ({
                 )}
 
                 {isWeather && isFavorite && (
-                    <IconContent onPress={() => setFavoriteCity(!favoriteCity)}>
+                    <IconContent onPress={handleFavoriteState}>
                         <Icon name={favoriteCity ? "heart" : "hearto"} />
                     </IconContent>
                 )}

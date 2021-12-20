@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Alert, FlatList } from "react-native";
 import { env } from "../../../env";
@@ -12,8 +12,6 @@ import CityWeatherCard from "../../components/CityWeatherCard";
 import Input from "../../components/Input";
 import NoCities from "../../components/NoCities";
 import { googlePlaceApi } from "../../services/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/core";
 import {
     Container,
     Header,
@@ -23,11 +21,12 @@ import {
     InputContent,
 } from "./styles";
 import { useCities } from "../../hooks/useCities";
+import LoadAnimation from "../../components/LoadAnimation";
 
 const { googleApiKey } = env;
 
 const Dashboard = () => {
-    const { cities, loadCities } = useCities();
+    const { cities, loadCities, isLoading } = useCities();
 
     const navigation = useNavigation<ScreenNavigationProp>();
 
@@ -72,11 +71,9 @@ const Dashboard = () => {
         Alert.alert("Não foram encontradas cidades");
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            loadCities();
-        }, [])
-    );
+    useEffect(() => {
+        loadCities();
+    }, []);
 
     return (
         <Container>
@@ -89,20 +86,24 @@ const Dashboard = () => {
             </InputContent>
 
             <Content>
-                <Cities>
-                    {cities && cities.length > 0 ? (
-                        <FlatList
-                            data={cities}
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={(item) => item.openWeatherId}
-                            renderItem={({ item }) => (
-                                <CityWeatherCard city={item} />
-                            )}
-                        />
-                    ) : (
-                        <NoCities />
-                    )}
-                </Cities>
+                {isLoading ? (
+                    <LoadAnimation />
+                ) : (
+                    <Cities>
+                        {cities && cities.length > 0 ? (
+                            <FlatList
+                                data={cities}
+                                showsVerticalScrollIndicator={false}
+                                keyExtractor={(item) => item.openWeatherId}
+                                renderItem={({ item }) => (
+                                    <CityWeatherCard city={item} />
+                                )}
+                            />
+                        ) : (
+                            <NoCities />
+                        )}
+                    </Cities>
+                )}
             </Content>
         </Container>
     );

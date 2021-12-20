@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { FlatList, View } from "react-native";
+import { Alert, FlatList, View } from "react-native";
 import { env } from "../../../env";
 import {
     CityDTO,
@@ -20,12 +20,14 @@ import {
     Description,
     Content,
 } from "./styles";
+import LoadAnimation from "../../components/LoadAnimation";
 
 const { openWeatherKey } = env;
 
 const CityDetail = () => {
-    const navigation = useNavigation<ScreenNavigationProp>();
+    const [isLoading, setLoading] = useState(true);
     const [dailyDetails, setDailyDetails] = useState<CityDTO[]>([]);
+    const navigation = useNavigation<ScreenNavigationProp>();
 
     const route = useRoute();
     const { cityDetail } = route.params as RouteParams;
@@ -36,51 +38,64 @@ const CityDetail = () => {
 
     useEffect(() => {
         const getDailyWeather = async () => {
-            const response = await openWeatherApi.get(
-                `onecall?lat=${cityDetail.coordinate.lat}&lon=${cityDetail.coordinate.lon}&units=metric&appid=${openWeatherKey}&lang=pt_br`
-            );
-            const { data } = response;
-            const { daily } = data;
+            try {
+                const response = await openWeatherApi.get(
+                    `onecall?lat=${cityDetail.coordinate.lat}&lon=${cityDetail.coordinate.lon}&units=metric&appid=${openWeatherKey}&lang=pt_br`
+                );
+                const { data } = response;
+                const { daily } = data;
 
-            const cityDetailsList: CityDTO[] = [];
+                const cityDetailsList: CityDTO[] = [];
 
-            for (let index = 0; index < 5; index++) {
-                const dayWeather = daily[index];
+                for (let index = 0; index < 5; index++) {
+                    const dayWeather = daily[index];
 
-                const weather = {
-                    main: dayWeather.weather[0].main,
-                    description: dayWeather.weather[0].description,
-                    temp: dayWeather.temp.day,
-                    tempMin: dayWeather.temp.min,
-                    tempMax: dayWeather.temp.max,
-                };
+                    const weather = {
+                        main: dayWeather.weather[0].main,
+                        description: dayWeather.weather[0].description,
+                        temp: dayWeather.temp.day,
+                        tempMin: dayWeather.temp.min,
+                        tempMax: dayWeather.temp.max,
+                    };
 
-                const weatherDate = addDays(new Date(), index);
+                    const weatherDate = addDays(new Date(), index);
 
-                const day = {
-                    title: format(weatherDate, "EEEE", {
-                        locale: ptBR,
-                    }),
-
-                    subTitle: `${weatherDate.getDate()} de ${format(
-                        weatherDate,
-                        "MMMM",
-                        {
+                    const day = {
+                        title: format(weatherDate, "EEEE", {
                             locale: ptBR,
-                        }
-                    )}`,
-                    weather,
-                    dayTime: String(dayWeather.dt),
-                } as CityDTO;
+                        }),
 
-                cityDetailsList.push(day);
+                        subTitle: `${weatherDate.getDate()} de ${format(
+                            weatherDate,
+                            "MMMM",
+                            {
+                                locale: ptBR,
+                            }
+                        )}`,
+                        weather,
+                        dayTime: String(dayWeather.dt),
+                    } as CityDTO;
+
+                    cityDetailsList.push(day);
+                }
+
+                setDailyDetails(cityDetailsList);
+            } catch (e) {
+                Alert.alert(
+                    "Não foi possível buscar a previsão para os próximos dias"
+                );
+                navigation.goBack();
             }
-
-            setDailyDetails(cityDetailsList);
         };
 
         getDailyWeather();
     }, []);
+
+    useEffect(() => {
+        if (dailyDetails.length > 0) {
+            setLoading(false);
+        }
+    }, [dailyDetails]);
 
     return (
         <Container>
@@ -98,14 +113,18 @@ const CityDetail = () => {
             <Description>Previsão para os próximos 5 dias</Description>
 
             <Content>
-                <FlatList
-                    data={dailyDetails}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.dayTime}
-                    renderItem={({ item }) => (
-                        <CityCard city={item} isFavorite={false} />
-                    )}
-                />
+                {isLoading ? (
+                    <LoadAnimation />
+                ) : (
+                    <FlatList
+                        data={dailyDetails}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item) => item.dayTime}
+                        renderItem={({ item }) => (
+                            <CityCard city={item} isFavorite={false} />
+                        )}
+                    />
+                )}
             </Content>
         </Container>
     );
