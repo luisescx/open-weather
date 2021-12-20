@@ -59,7 +59,9 @@ const CityCard = ({
             <Header>
                 <HeaderContent>
                     <Title>{city.title}</Title>
-                    <SubTitle isWeather={isWeather}>{city.subTitle}</SubTitle>
+                    <SubTitle isWeather={isWeather && isFavorite}>
+                        {city.subTitle}
+                    </SubTitle>
                 </HeaderContent>
 
                 {isWeather && (
