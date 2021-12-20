@@ -53,7 +53,7 @@ export interface CityDTO {
 
     dayTime: string;
 
-    // isFavorite: boolean;
+    isFavorite: boolean;
 }
 
 export interface CityDetailProps {
@@ -89,3 +89,12 @@ export type ScreenNavigationProp = CompositeNavigationProp<
     NativeStackNavigationProp<RootParamList>,
     NativeStackNavigationProp<RootParamList>
 >;
+
+export interface CitiesContextData {
+    cities: CityDTO[];
+    isLoading: boolean;
+    addCity: (newCity: CityDTO) => void;
+    loadCities: () => void;
+    removeCity: (city: CityDTO) => void;
+    handleFavorite: (city: CityDTO) => void;
+}
